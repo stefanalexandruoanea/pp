@@ -1,7 +1,32 @@
 
 # Python program to  create a simple GUI
 # calculator using Tkinter
-
+def evaluate_polish(expression):
+    stack = []
+    operators = {
+        '+': lambda a, b: a + b,
+        '-': lambda a, b: a - b,
+        '*': lambda a, b: a * b,
+        '/': lambda a, b: a / b,
+        '%': lambda a, b: a % b,  
+        '^': lambda a, b: a ** b  
+    }
+    
+    tokens = expression.split()[::-1]
+    
+    while tokens:
+        token = tokens.pop()
+        if token in operators:
+            b = stack.pop()
+            a = stack.pop()
+            result = operators[token](a, b)
+            stack.append(result)
+        elif token.isnumeric() or token.replace('.', '', 1).isdigit():
+            stack.append(float(token))
+        else:
+            raise ValueError(f"Invalid token: {token}")
+    
+    return stack.pop()
 # import everything from tkinter module
 from tkinter import *
 
@@ -95,6 +120,10 @@ if __name__ == "__main__":
     # when user press the button, the command or
     # function a[ffiliated to that button is executed .
 
+    
+    result = evaluate_polish(equation)
+    print(result)  
+    
     button1 = Button(gui, text=' 1 ', fg='white', bg='blue',
                      command=lambda: press(1), height=1, width=7)
     button1.grid(row=2, column=0)
@@ -158,6 +187,6 @@ if __name__ == "__main__":
     clear = Button(gui, text='Clear', fg='white', bg='blue',
                    command=clear, height=1, width=7)
     clear.grid(row=5, column='1')
-
+    
     # start the GUI
     gui.mainloop()
